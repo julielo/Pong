@@ -476,9 +476,9 @@
 
 					this.board = new _Board2.default(this.width, this.height);
 
-					this.player1 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.boardGap, (this.height - this.paddleHeight) / 2);
+					this.player1 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.boardGap, (this.height - this.paddleHeight) / 2, _settings.KEYS.a, _settings.KEYS.z);
 
-					this.player2 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.width - this.boardGap - this.paddleWidth, (this.height - this.paddleHeight) / 2);
+					this.player2 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.width - this.boardGap - this.paddleWidth, (this.height - this.paddleHeight) / 2, _settings.KEYS.up, _settings.KEYS.down);
 			}
 
 			_createClass(Game, [{
@@ -516,13 +516,13 @@
 	});
 	var SVG_NS = exports.SVG_NS = 'http://www.w3.org/2000/svg';
 
-	// export const KEYS = {
-	//   a: 65,        // player 1 up key
-	//   z: 90,        // player 1 down key
-	//   up: 38,       // player 2 up key
-	//   down: 40,     // player 2 down key
-	//   spaceBar: 32 // we'll use this later...
-	// };
+	var KEYS = exports.KEYS = {
+	  a: 65, // player 1 up key
+	  z: 90, // player 1 down key
+	  up: 38, // player 2 up key
+	  down: 40, // player 2 down key
+	  spaceBar: 32 // we'll use this later...
+	};
 
 /***/ },
 /* 11 */
@@ -593,6 +593,8 @@
 
 	var Paddle = function () {
 	  function Paddle(boardHeight, width, height, x, y, up, down) {
+	    var _this = this;
+
 	    _classCallCheck(this, Paddle);
 
 	    this.boardHeight = boardHeight;
@@ -602,9 +604,30 @@
 	    this.y = y;
 	    this.speed = 10;
 	    this.score = 0;
+
+	    document.addEventListener('keydown', function (event) {
+	      switch (event.keyCode) {
+	        case up:
+	          _this.up();
+	          break;
+	        case down:
+	          _this.down();
+	          break;
+	      }
+	    });
 	  }
 
 	  _createClass(Paddle, [{
+	    key: 'up',
+	    value: function up() {
+	      this.y = this.y - this.speed;
+	    }
+	  }, {
+	    key: 'down',
+	    value: function down() {
+	      this.y = this.y + this.speed && Math.max(10, 50);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render(svg) {
 	      var rect = document.createElementNS(_settings.SVG_NS, 'rect');
