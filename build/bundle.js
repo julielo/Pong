@@ -471,12 +471,11 @@
 			this.element = element;
 			this.width = width;
 			this.height = height;
-
 			this.gameElement = document.getElementById(this.element);
-
 			this.boardGap = 10;
 			this.paddleWidth = 8;
 			this.paddleHeight = 56;
+			this.pause = false;
 
 			this.board = new _Board2.default(this.width, this.height);
 
@@ -490,6 +489,10 @@
 		_createClass(Game, [{
 			key: 'render',
 			value: function render() {
+
+				if (this.pause) {
+					return;
+				}
 
 				this.gameElement.innerHTML = '';
 
@@ -687,10 +690,36 @@
 	    value: function reset() {
 	      this.x = this.boardWidth / 2;
 	      this.y = this.boardHeight / 2;
+
+	      this.vy = 0;
+	      while (this.vy === 0) {
+	        this.vy = Math.floor(Math.random() * 10 - 5);
+	      }
+
+	      this.vx = this.direction * (6 - Math.abs(this.vy));
+	    }
+	  }, {
+	    key: 'wallCollision',
+	    value: function wallCollision() {
+	      var hitLeft = this.x - this.radius <= 0;
+	      var hitRight = this.x + this.radius >= this.boardWidth;
+	      var hitTop = this.y - this.radius <= 0;
+	      var hitBottom = this.y + this.radius >= this.boardHeight;
+
+	      if (hitLeft || hitRight) {
+	        this.vx = -this.vx;
+	      } else if (hitTop || hitBottom) {
+	        this.vy = -this.vy;
+	      }
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render(svg) {
+	      this.x += this.vx;
+	      this.y += this.vy;
+
+	      this.wallCollision();
+
 	      var circle = document.createElementNS(_settings.SVG_NS, 'circle');
 	      circle.setAttributeNS(null, 'cx', this.x), circle.setAttributeNS(null, 'cy', this.y), circle.setAttributeNS(null, 'r', this.radius), circle.setAttributeNS(null, 'fill', 'orange');
 
