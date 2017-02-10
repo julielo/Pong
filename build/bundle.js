@@ -441,7 +441,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-			value: true
+		value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -456,51 +456,59 @@
 
 	var _Paddle2 = _interopRequireDefault(_Paddle);
 
+	var _Ball = __webpack_require__(13);
+
+	var _Ball2 = _interopRequireDefault(_Ball);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Game = function () {
-			function Game(element, width, height) {
-					_classCallCheck(this, Game);
+		function Game(element, width, height) {
+			_classCallCheck(this, Game);
 
-					this.element = element;
-					this.width = width;
-					this.height = height;
+			this.element = element;
+			this.width = width;
+			this.height = height;
 
-					this.gameElement = document.getElementById(this.element);
+			this.gameElement = document.getElementById(this.element);
 
-					this.boardGap = 10;
-					this.paddleWidth = 8;
-					this.paddleHeight = 56;
+			this.boardGap = 10;
+			this.paddleWidth = 8;
+			this.paddleHeight = 56;
 
-					this.board = new _Board2.default(this.width, this.height);
+			this.board = new _Board2.default(this.width, this.height);
 
-					this.player1 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.boardGap, (this.height - this.paddleHeight) / 2, _settings.KEYS.a, _settings.KEYS.z);
+			this.player1 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.boardGap, (this.height - this.paddleHeight) / 2, _settings.KEYS.a, _settings.KEYS.z);
 
-					this.player2 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.width - this.boardGap - this.paddleWidth, (this.height - this.paddleHeight) / 2, _settings.KEYS.up, _settings.KEYS.down);
+			this.player2 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.width - this.boardGap - this.paddleWidth, (this.height - this.paddleHeight) / 2, _settings.KEYS.up, _settings.KEYS.down);
+
+			this.ball = new _Ball2.default(this.radius, this.width, this.height);
+		}
+
+		_createClass(Game, [{
+			key: 'render',
+			value: function render() {
+
+				this.gameElement.innerHTML = '';
+
+				var svg = document.createElementNS(_settings.SVG_NS, 'svg');
+				svg.setAttributeNS(null, 'width', this.width);
+				svg.setAttributeNS(null, 'height', this.height);
+				svg.setAttributeNS(null, 'viewbox', '0 0 ' + this.width + ' ' + this.height);
+				this.gameElement.appendChild(svg);
+
+				this.board.render(svg);
+
+				this.player1.render(svg);
+				this.player2.render(svg);
+
+				this.ball.render(svg);
 			}
+		}]);
 
-			_createClass(Game, [{
-					key: 'render',
-					value: function render() {
-
-							this.gameElement.innerHTML = '';
-
-							var svg = document.createElementNS(_settings.SVG_NS, 'svg');
-							svg.setAttributeNS(null, 'width', this.width);
-							svg.setAttributeNS(null, 'height', this.height);
-							svg.setAttributeNS(null, 'viewbox', '0 0 ' + this.width + ' ' + this.height);
-							this.gameElement.appendChild(svg);
-
-							this.board.render(svg);
-
-							this.player1.render(svg);
-							this.player2.render(svg);
-					}
-			}]);
-
-			return Game;
+		return Game;
 	}();
 
 	exports.default = Game;
@@ -620,12 +628,12 @@
 	  _createClass(Paddle, [{
 	    key: 'up',
 	    value: function up() {
-	      this.y = this.y - this.speed;
+	      this.y = Math.max(0, this.y - this.speed);
 	    }
 	  }, {
 	    key: 'down',
 	    value: function down() {
-	      this.y = this.y + this.speed && Math.max(10, 50);
+	      this.y = Math.min(this.boardHeight - this.height, this.y + this.speed);
 	    }
 	  }, {
 	    key: 'render',
@@ -645,6 +653,55 @@
 	}();
 
 	exports.default = Paddle;
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _settings = __webpack_require__(10);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Ball = function () {
+	  function Ball(radius, boardWidth, boardHeight) {
+	    _classCallCheck(this, Ball);
+
+	    this.radius = 8;
+	    this.boardWidth = boardWidth;
+	    this.boardHeight = boardHeight;
+	    this.direction = 1;
+
+	    this.reset();
+	  }
+
+	  _createClass(Ball, [{
+	    key: 'reset',
+	    value: function reset() {
+	      this.x = this.boardWidth / 2;
+	      this.y = this.boardHeight / 2;
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(svg) {
+	      var circle = document.createElementNS(_settings.SVG_NS, 'circle');
+	      circle.setAttributeNS(null, 'cx', this.x), circle.setAttributeNS(null, 'cy', this.y), circle.setAttributeNS(null, 'r', this.radius), circle.setAttributeNS(null, 'fill', 'orange');
+
+	      svg.appendChild(circle);
+	    }
+	  }]);
+
+	  return Ball;
+	}();
+
+	exports.default = Ball;
 
 /***/ }
 /******/ ]);
