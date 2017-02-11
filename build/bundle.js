@@ -466,6 +466,8 @@
 
 	var Game = function () {
 		function Game(element, width, height) {
+			var _this = this;
+
 			_classCallCheck(this, Game);
 
 			this.element = element;
@@ -484,6 +486,14 @@
 			this.player2 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.width - this.boardGap - this.paddleWidth, (this.height - this.paddleHeight) / 2, _settings.KEYS.up, _settings.KEYS.down);
 
 			this.ball = new _Ball2.default(this.radius, this.width, this.height);
+
+			document.addEventListener('keydown', function (event) {
+				switch (event.keyCode) {
+					case _settings.KEYS.spaceBar:
+						_this.pause = !_this.pause;
+						break;
+				}
+			});
 		}
 
 		_createClass(Game, [{
@@ -504,10 +514,10 @@
 
 				this.board.render(svg);
 
+				this.ball.render(svg, this.player, this.player2);
+
 				this.player1.render(svg);
 				this.player2.render(svg);
-
-				this.ball.render(svg);
 			}
 		}]);
 
@@ -639,6 +649,15 @@
 	      this.y = Math.min(this.boardHeight - this.height, this.y + this.speed);
 	    }
 	  }, {
+	    key: 'coordinates',
+	    value: function coordinates(x, y, width, height) {
+	      var leftX = x;
+	      var rightX = x + width;
+	      var topY = y;
+	      var bottomY = y + height;
+	      return [leftX, rightX, topY, bottomY];
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render(svg) {
 	      var rect = document.createElementNS(_settings.SVG_NS, 'rect');
@@ -666,6 +685,8 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -713,12 +734,42 @@
 	      }
 	    }
 	  }, {
+	    key: 'paddleCollision',
+	    value: function paddleCollision(player1, player2) {
+	      if (this.vx > 0) {
+	        var paddle = player2.coordinates(player2.x, player2.y, player2.width, player2.height);
+
+	        var _paddle = _slicedToArray(paddle, 4),
+	            leftX = _paddle[0],
+	            rightX = _paddle[1],
+	            topY = _paddle[2],
+	            bottomY = _paddle[3];
+
+	        if (this.x + this.radius >= leftX && this.x + this.radius <= rightX && this.y >= topY && this.y <= bottomY) {
+	          this.vx = -this.vx;
+	        }
+	      } else {
+	        var _paddle2 = player1.coordinates(player1.x, player1.y, player1.width, player1.height);
+
+	        var _paddle3 = _slicedToArray(_paddle2, 4),
+	            _leftX = _paddle3[0],
+	            _rightX = _paddle3[1],
+	            _topY = _paddle3[2],
+	            _bottomY = _paddle3[3];
+
+	        if (this.x - this.radius >= _leftX && this.x - this.radius <= _rightX && this.y >= _topY && this.y <= _bottomY) {
+	          this.vx = -this.vx;
+	        }
+	      }
+	    }
+	  }, {
 	    key: 'render',
-	    value: function render(svg) {
+	    value: function render(svg, player1, player2) {
 	      this.x += this.vx;
 	      this.y += this.vy;
 
 	      this.wallCollision();
+	      this.paddleCollision(player1, player2);
 
 	      var circle = document.createElementNS(_settings.SVG_NS, 'circle');
 	      circle.setAttributeNS(null, 'cx', this.x), circle.setAttributeNS(null, 'cy', this.y), circle.setAttributeNS(null, 'r', this.radius), circle.setAttributeNS(null, 'fill', 'orange');
