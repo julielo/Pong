@@ -460,6 +460,14 @@
 
 	var _Ball2 = _interopRequireDefault(_Ball);
 
+	var _Score = __webpack_require__(14);
+
+	var _Score2 = _interopRequireDefault(_Score);
+
+	var _Message = __webpack_require__(15);
+
+	var _Message2 = _interopRequireDefault(_Message);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -487,6 +495,10 @@
 
 			this.ball = new _Ball2.default(this.radius, this.width, this.height);
 
+			this.score1 = new _Score2.default(170, 30, 30);
+			this.score2 = new _Score2.default(320, 30, 30);
+			this.winner = new _Message2.default(90, 150, 40);
+
 			document.addEventListener('keydown', function (event) {
 				switch (event.keyCode) {
 					case _settings.KEYS.spaceBar:
@@ -499,7 +511,6 @@
 		_createClass(Game, [{
 			key: 'render',
 			value: function render() {
-
 				if (this.pause) {
 					return;
 				}
@@ -514,10 +525,22 @@
 
 				this.board.render(svg);
 
-				this.ball.render(svg, this.player, this.player2);
+				this.ball.render(svg, this.player1, this.player2);
 
 				this.player1.render(svg);
 				this.player2.render(svg);
+
+				this.score1.render(svg, this.player1.score);
+				this.score2.render(svg, this.player2.score);
+
+				// Declare Winner
+				var player1Msg = 'Player 1 Wins!';
+				var player2Msg = 'Player 2 Wins!';
+				if (this.player1.score === 5) {
+					this.winner.render(svg, player1Msg);
+				} else if (this.player2.score === 5) {
+					this.winner.render(svg, player2Msg);
+				}
 			}
 		}]);
 
@@ -703,6 +726,8 @@
 	    this.boardHeight = boardHeight;
 	    this.direction = 1;
 
+	    this.ping = new Audio('public/sounds/pong-03.wav');
+
 	    this.reset();
 	  }
 
@@ -747,6 +772,7 @@
 
 	        if (this.x + this.radius >= leftX && this.x + this.radius <= rightX && this.y >= topY && this.y <= bottomY) {
 	          this.vx = -this.vx;
+	          this.ping.play();
 	        }
 	      } else {
 	        var _paddle2 = player1.coordinates(player1.x, player1.y, player1.width, player1.height);
@@ -759,7 +785,18 @@
 
 	        if (this.x - this.radius >= _leftX && this.x - this.radius <= _rightX && this.y >= _topY && this.y <= _bottomY) {
 	          this.vx = -this.vx;
+	          this.ping.play();
 	        }
+	      }
+	    }
+	  }, {
+	    key: 'goal',
+	    value: function goal(player) {
+	      player.score++;
+	      this.reset();
+	      if (player.score === 5) {
+	        this.vx = 0;
+	        this.vy = 0;
 	      }
 	    }
 	  }, {
@@ -775,6 +812,18 @@
 	      circle.setAttributeNS(null, 'cx', this.x), circle.setAttributeNS(null, 'cy', this.y), circle.setAttributeNS(null, 'r', this.radius), circle.setAttributeNS(null, 'fill', 'orange');
 
 	      svg.appendChild(circle);
+
+	      // Detect goal
+	      var rightGoal = this.x + this.radius >= this.boardWidth;
+	      var leftGoal = this.x - this.radius <= 0;
+
+	      if (rightGoal) {
+	        this.goal(player1);
+	        this.direction = 1;
+	      } else if (leftGoal) {
+	        this.goal(player2);
+	        this.direction = -1;
+	      }
 	    }
 	  }]);
 
@@ -782,6 +831,96 @@
 	}();
 
 	exports.default = Ball;
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _settings = __webpack_require__(10);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Score = function () {
+	  function Score(x, y, size) {
+	    _classCallCheck(this, Score);
+
+	    this.x = x;
+	    this.y = y;
+	    this.size = size;
+	  }
+
+	  _createClass(Score, [{
+	    key: 'render',
+	    value: function render(svg, scoreCount) {
+	      var score = document.createElementNS(_settings.SVG_NS, 'text');
+	      score.setAttributeNS(null, 'x', this.x);
+	      score.setAttributeNS(null, 'y', this.y);
+	      score.setAttributeNS(null, 'fill', '#fff');
+	      score.setAttributeNS(null, 'font-size', this.size);
+	      score.setAttributeNS(null, 'font-family', 'Silkscreen Web, monospace');
+	      score.innerHTML = scoreCount;
+
+	      svg.appendChild(score);
+	    }
+	  }]);
+
+	  return Score;
+	}();
+
+	exports.default = Score;
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _settings = __webpack_require__(10);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Message = function () {
+	  function Message(x, y, size) {
+	    _classCallCheck(this, Message);
+
+	    this.x = x;
+	    this.y = y;
+	    this.size = size;
+	  }
+
+	  _createClass(Message, [{
+	    key: 'render',
+	    value: function render(svg, message) {
+	      var winner = document.createElementNS(_settings.SVG_NS, 'text');
+	      winner.setAttributeNS(null, 'x', this.x);
+	      winner.setAttributeNS(null, 'y', this.y);
+	      winner.setAttributeNS(null, 'fill', '#fff');
+	      winner.setAttributeNS(null, 'font-size', this.size);
+	      winner.setAttributeNS(null, 'font-family', 'Silkscreen Web, monospace');
+	      winner.innerHTML = message;
+
+	      svg.appendChild(winner);
+	    }
+	  }]);
+
+	  return Message;
+	}();
+
+	exports.default = Message;
 
 /***/ }
 /******/ ]);

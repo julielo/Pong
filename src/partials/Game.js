@@ -4,6 +4,7 @@ import Board from './Board';
 import Paddle from './Paddle';
 import Ball from './Ball';
 import Score from './Score';
+import Message from './Message';
 
 export default class Game {
 
@@ -41,18 +42,18 @@ export default class Game {
 
 		this.score1 = new Score(170, 30, 30);
 		this.score2 = new Score(320, 30, 30);
+		this.winner = new Message(90, 150, 40);
 
 		document.addEventListener('keydown', event => {
       switch (event.keyCode) {
-          case KEYS.spaceBar:
-            this.pause = !this.pause;
-            break;
-					}
+        case KEYS.spaceBar:
+          this.pause = !this.pause;
+          break;
+			}
     });
   }
 
 	render() {
-
 		if (this.pause) {
 			return;
 		}
@@ -74,5 +75,14 @@ export default class Game {
 
 		this.score1.render(svg, this.player1.score);
 		this.score2.render(svg, this.player2.score);
+
+    // Declare Winner
+    const player1Msg = 'Player 1 Wins!';
+		const player2Msg = 'Player 2 Wins!';
+		if (this.player1.score === 5) {
+			this.winner.render(svg, player1Msg);
+		} else if (this.player2.score === 5) {
+			this.winner.render(svg, player2Msg);
+		}
 	}
 }

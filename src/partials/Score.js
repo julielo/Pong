@@ -13,7 +13,7 @@ export default class Score {
     score.setAttributeNS(null, 'y', this.y);
     score.setAttributeNS(null, 'fill', '#fff');
     score.setAttributeNS(null, 'font-size', this.size);
-    score.setAttributeNS(null, 'font-family', 'Silkscreen Web');
+    score.setAttributeNS(null, 'font-family', 'Silkscreen Web, monospace');
     score.innerHTML = scoreCount;
 
     svg.appendChild(score);
