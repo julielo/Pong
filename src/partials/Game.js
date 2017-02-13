@@ -1,4 +1,4 @@
-import { SVG_NS, KEYS } from '../settings';
+import { SVG_NS, KEYS, SETTINGS } from '../settings';
 
 import Board from './Board';
 import Paddle from './Paddle';
@@ -13,7 +13,7 @@ export default class Game {
 		this.width = width;
 		this.height = height;
     this.gameElement = document.getElementById(this.element);
-		this.boardGap = 10;
+		this.boardGap = SETTINGS.boardGap;
 		this.paddleWidth = 8;
 		this.paddleHeight = 56;
 		this.pause = false;
@@ -42,7 +42,7 @@ export default class Game {
 
 		this.score1 = new Score(170, 30, 30);
 		this.score2 = new Score(320, 30, 30);
-		this.winner = new Message(90, 150, 40);
+		this.winner = new Message(80, 170, 40);
 
 		document.addEventListener('keydown', event => {
       switch (event.keyCode) {

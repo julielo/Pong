@@ -1,4 +1,4 @@
-import { SVG_NS } from '../settings';
+import { SVG_NS, SETTINGS } from '../settings';
 
 export default class Ball {
 
@@ -7,6 +7,7 @@ export default class Ball {
     this.boardWidth = boardWidth;
     this.boardHeight = boardHeight;
     this.direction = 1;
+    this.ballColor = SETTINGS.ballColor;
 
     this.ping = new Audio('public/sounds/pong-03.wav');
 
@@ -88,7 +89,7 @@ export default class Ball {
     circle.setAttributeNS(null, 'cx', this.x),
       circle.setAttributeNS(null, 'cy', this.y),
       circle.setAttributeNS(null, 'r', this.radius),
-      circle.setAttributeNS(null, 'fill', 'orange');
+      circle.setAttributeNS(null, 'fill', this.ballColor);
 
     svg.appendChild(circle);
 
