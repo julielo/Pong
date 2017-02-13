@@ -72,11 +72,11 @@ export default class Ball {
   goal(player) {
     player.score++;
     this.reset();
-    if ( player.score === 5 ) {
+    if (player.score === 5) {
       this.vx = 0;
       this.vy = 0;
-   }
- }
+    }
+  }
 
   render(svg, player1, player2) {
     this.x += this.vx;

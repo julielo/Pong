@@ -13,13 +13,13 @@ export default class Paddle {
 
     document.addEventListener('keydown', event => {
       switch (event.keyCode) {
-          case up:
-            this.up();
-            break;
-          case down:
-            this.down();
-            break;
-        }
+        case up:
+          this.up();
+          break;
+        case down:
+          this.down();
+          break;
+      }
     });
   }
 
