@@ -1,4 +1,7 @@
-import { SVG_NS, SETTINGS } from '../settings';
+import {
+  SVG_NS,
+  SETTINGS
+} from '../settings';
 
 export default class Ball {
 
@@ -14,6 +17,7 @@ export default class Ball {
     this.reset();
   }
 
+  // Resets path of ball and randomises path.
   reset() {
     this.x = this.boardWidth / 2;
     this.y = this.boardHeight / 2;
@@ -26,6 +30,7 @@ export default class Ball {
     this.vx = this.direction * (6 - Math.abs(this.vy));
   }
 
+  // Detects ball collision and reverses path of ball.
   wallCollision() {
     const hitLeft = this.x - this.radius <= 0;
     const hitRight = this.x + this.radius >= this.boardWidth;
@@ -39,6 +44,7 @@ export default class Ball {
     }
   }
 
+  // Checks for coordinates of players paddles, detects collision of ball and plays sound.
   paddleCollision(player1, player2) {
     if (this.vx > 0) {
       let paddle = player2.coordinates(player2.x, player2.y, player2.width, player2.height);
@@ -69,6 +75,8 @@ export default class Ball {
     }
   }
 
+  // Increments players' score and resets the ball. Once maximum score is met, ball is
+  // placed in the middle of the board.
   goal(player) {
     player.score++;
     this.reset();
@@ -85,13 +93,13 @@ export default class Ball {
     this.wallCollision();
     this.paddleCollision(player1, player2);
 
-    let circle = document.createElementNS(SVG_NS, 'circle');
-    circle.setAttributeNS(null, 'cx', this.x),
-      circle.setAttributeNS(null, 'cy', this.y),
-      circle.setAttributeNS(null, 'r', this.radius),
-      circle.setAttributeNS(null, 'fill', this.ballColor);
+    let ball = document.createElementNS(SVG_NS, 'circle');
+    ball.setAttributeNS(null, 'cx', this.x),
+    ball.setAttributeNS(null, 'cy', this.y),
+    ball.setAttributeNS(null, 'r', this.radius),
+    ball.setAttributeNS(null, 'fill', this.ballColor);
 
-    svg.appendChild(circle);
+    svg.appendChild(ball);
 
     // Detect goal
     const rightGoal = this.x + this.radius >= this.boardWidth;

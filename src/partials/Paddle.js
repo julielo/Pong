@@ -23,10 +23,12 @@ export default class Paddle {
     });
   }
 
+  // Keypress for paddle control
   up() {
     this.y = Math.max(0, this.y - this.speed);
   }
 
+  // Keypress for paddle control
   down() {
     this.y = Math.min(this.boardHeight - this.height, this.y + this.speed);
   }
@@ -40,13 +42,13 @@ export default class Paddle {
   }
 
   render(svg) {
-    let rect = document.createElementNS(SVG_NS, 'rect');
-    rect.setAttributeNS(null, 'width', this.width);
-    rect.setAttributeNS(null, 'height', this.height);
-    rect.setAttributeNS(null, 'x', this.x);
-    rect.setAttributeNS(null, 'y', this.y);
-    rect.setAttributeNS(null, 'fill', this.paddleColor);
+    let paddle = document.createElementNS(SVG_NS, 'rect');
+    paddle.setAttributeNS(null, 'width', this.width);
+    paddle.setAttributeNS(null, 'height', this.height);
+    paddle.setAttributeNS(null, 'x', this.x);
+    paddle.setAttributeNS(null, 'y', this.y);
+    paddle.setAttributeNS(null, 'fill', this.paddleColor);
 
-    svg.appendChild(rect);
+    svg.appendChild(paddle);
   }
 }

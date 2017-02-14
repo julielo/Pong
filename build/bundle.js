@@ -441,7 +441,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	    value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -473,78 +473,79 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Game = function () {
-		function Game(element, width, height) {
-			var _this = this;
+	    function Game(element, width, height) {
+	        var _this = this;
 
-			_classCallCheck(this, Game);
+	        _classCallCheck(this, Game);
 
-			this.element = element;
-			this.width = width;
-			this.height = height;
-			this.gameElement = document.getElementById(this.element);
-			this.boardGap = _settings.SETTINGS.boardGap;
-			this.paddleWidth = 8;
-			this.paddleHeight = 56;
-			this.pause = false;
+	        this.element = element;
+	        this.width = width;
+	        this.height = height;
+	        this.gameElement = document.getElementById(this.element);
+	        this.boardGap = _settings.SETTINGS.boardGap;
+	        this.paddleWidth = 8;
+	        this.paddleHeight = 56;
+	        this.pause = false;
 
-			this.board = new _Board2.default(this.width, this.height);
+	        this.board = new _Board2.default(this.width, this.height);
 
-			this.player1 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.boardGap, (this.height - this.paddleHeight) / 2, _settings.KEYS.a, _settings.KEYS.z);
+	        this.player1 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.boardGap, (this.height - this.paddleHeight) / 2, _settings.KEYS.a, _settings.KEYS.z);
 
-			this.player2 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.width - this.boardGap - this.paddleWidth, (this.height - this.paddleHeight) / 2, _settings.KEYS.up, _settings.KEYS.down);
+	        this.player2 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.width - this.boardGap - this.paddleWidth, (this.height - this.paddleHeight) / 2, _settings.KEYS.up, _settings.KEYS.down);
 
-			this.ball = new _Ball2.default(this.radius, this.width, this.height);
+	        this.ball = new _Ball2.default(this.radius, this.width, this.height);
 
-			this.score1 = new _Score2.default(170, 30, 30);
-			this.score2 = new _Score2.default(320, 30, 30);
-			this.winner = new _Message2.default(80, 170, 40);
+	        this.score1 = new _Score2.default(170, 30, 30);
+	        this.score2 = new _Score2.default(320, 30, 30);
+	        this.winner = new _Message2.default(80, 170, 40);
 
-			document.addEventListener('keydown', function (event) {
-				switch (event.keyCode) {
-					case _settings.KEYS.spaceBar:
-						_this.pause = !_this.pause;
-						break;
-				}
-			});
-		}
+	        document.addEventListener('keydown', function (event) {
+	            switch (event.keyCode) {
+	                case _settings.KEYS.spaceBar:
+	                    _this.pause = !_this.pause;
+	                    break;
+	            }
+	        });
+	    }
 
-		_createClass(Game, [{
-			key: 'render',
-			value: function render() {
-				if (this.pause) {
-					return;
-				}
+	    _createClass(Game, [{
+	        key: 'render',
+	        value: function render() {
+	            if (this.pause) {
+	                return;
+	            }
 
-				this.gameElement.innerHTML = '';
+	            this.gameElement.innerHTML = '';
 
-				var svg = document.createElementNS(_settings.SVG_NS, 'svg');
-				svg.setAttributeNS(null, 'width', this.width);
-				svg.setAttributeNS(null, 'height', this.height);
-				svg.setAttributeNS(null, 'viewbox', '0 0 ' + this.width + ' ' + this.height);
-				this.gameElement.appendChild(svg);
+	            var svg = document.createElementNS(_settings.SVG_NS, 'svg');
+	            svg.setAttributeNS(null, 'width', this.width);
+	            svg.setAttributeNS(null, 'height', this.height);
+	            svg.setAttributeNS(null, 'viewbox', '0 0 ' + this.width + ' ' + this.height);
+	            this.gameElement.appendChild(svg);
 
-				this.board.render(svg);
+	            this.board.render(svg);
 
-				this.ball.render(svg, this.player1, this.player2);
+	            this.ball.render(svg, this.player1, this.player2);
 
-				this.player1.render(svg);
-				this.player2.render(svg);
+	            // Players (paddles)
+	            this.player1.render(svg);
+	            this.player2.render(svg);
 
-				this.score1.render(svg, this.player1.score);
-				this.score2.render(svg, this.player2.score);
+	            this.score1.render(svg, this.player1.score);
+	            this.score2.render(svg, this.player2.score);
 
-				// Declare Winner
-				var player1Msg = 'Player 1 Wins!';
-				var player2Msg = 'Player 2 Wins!';
-				if (this.player1.score === 5) {
-					this.winner.render(svg, player1Msg);
-				} else if (this.player2.score === 5) {
-					this.winner.render(svg, player2Msg);
-				}
-			}
-		}]);
+	            // Declare Winner
+	            var player1Msg = 'Player 1 Wins!';
+	            var player2Msg = 'Player 2 Wins!';
+	            if (this.player1.score === 5) {
+	                this.winner.render(svg, player1Msg);
+	            } else if (this.player2.score === 5) {
+	                this.winner.render(svg, player2Msg);
+	            }
+	        }
+	    }]);
 
-		return Game;
+	    return Game;
 	}();
 
 	exports.default = Game;
@@ -604,10 +605,10 @@
 	  _createClass(Board, [{
 	    key: 'render',
 	    value: function render(svg) {
-	      var rect = document.createElementNS(_settings.SVG_NS, 'rect');
-	      rect.setAttributeNS(null, 'width', this.width);
-	      rect.setAttributeNS(null, 'height', this.height);
-	      rect.setAttributeNS(null, 'fill', this.boardColor);
+	      var board = document.createElementNS(_settings.SVG_NS, 'rect');
+	      board.setAttributeNS(null, 'width', this.width);
+	      board.setAttributeNS(null, 'height', this.height);
+	      board.setAttributeNS(null, 'fill', this.boardColor);
 
 	      var line = document.createElementNS(_settings.SVG_NS, 'line');
 	      line.setAttributeNS(null, 'x1', this.width / 2);
@@ -618,7 +619,7 @@
 	      line.setAttributeNS(null, 'stroke-dasharray', '20, 15');
 	      line.setAttributeNS(null, 'stroke-width', '5');
 
-	      svg.appendChild(rect);
+	      svg.appendChild(board);
 	      svg.appendChild(line);
 	    }
 	  }]);
@@ -671,11 +672,17 @@
 	    });
 	  }
 
+	  // Keypress for paddle control
+
+
 	  _createClass(Paddle, [{
 	    key: 'up',
 	    value: function up() {
 	      this.y = Math.max(0, this.y - this.speed);
 	    }
+
+	    // Keypress for paddle control
+
 	  }, {
 	    key: 'down',
 	    value: function down() {
@@ -693,14 +700,14 @@
 	  }, {
 	    key: 'render',
 	    value: function render(svg) {
-	      var rect = document.createElementNS(_settings.SVG_NS, 'rect');
-	      rect.setAttributeNS(null, 'width', this.width);
-	      rect.setAttributeNS(null, 'height', this.height);
-	      rect.setAttributeNS(null, 'x', this.x);
-	      rect.setAttributeNS(null, 'y', this.y);
-	      rect.setAttributeNS(null, 'fill', this.paddleColor);
+	      var paddle = document.createElementNS(_settings.SVG_NS, 'rect');
+	      paddle.setAttributeNS(null, 'width', this.width);
+	      paddle.setAttributeNS(null, 'height', this.height);
+	      paddle.setAttributeNS(null, 'x', this.x);
+	      paddle.setAttributeNS(null, 'y', this.y);
+	      paddle.setAttributeNS(null, 'fill', this.paddleColor);
 
-	      svg.appendChild(rect);
+	      svg.appendChild(paddle);
 	    }
 	  }]);
 
@@ -742,6 +749,9 @@
 	    this.reset();
 	  }
 
+	  // Resets path of ball and randomises path.
+
+
 	  _createClass(Ball, [{
 	    key: 'reset',
 	    value: function reset() {
@@ -755,6 +765,9 @@
 
 	      this.vx = this.direction * (6 - Math.abs(this.vy));
 	    }
+
+	    // Detects ball collision and reverses path of ball.
+
 	  }, {
 	    key: 'wallCollision',
 	    value: function wallCollision() {
@@ -769,6 +782,9 @@
 	        this.vy = -this.vy;
 	      }
 	    }
+
+	    // Checks for coordinates of players paddles, detects collision of ball and plays sound.
+
 	  }, {
 	    key: 'paddleCollision',
 	    value: function paddleCollision(player1, player2) {
@@ -800,6 +816,10 @@
 	        }
 	      }
 	    }
+
+	    // Increments players' score and resets the ball. Once maximum score is met, ball is
+	    // placed in the middle of the board.
+
 	  }, {
 	    key: 'goal',
 	    value: function goal(player) {
@@ -819,10 +839,10 @@
 	      this.wallCollision();
 	      this.paddleCollision(player1, player2);
 
-	      var circle = document.createElementNS(_settings.SVG_NS, 'circle');
-	      circle.setAttributeNS(null, 'cx', this.x), circle.setAttributeNS(null, 'cy', this.y), circle.setAttributeNS(null, 'r', this.radius), circle.setAttributeNS(null, 'fill', this.ballColor);
+	      var ball = document.createElementNS(_settings.SVG_NS, 'circle');
+	      ball.setAttributeNS(null, 'cx', this.x), ball.setAttributeNS(null, 'cy', this.y), ball.setAttributeNS(null, 'r', this.radius), ball.setAttributeNS(null, 'fill', this.ballColor);
 
-	      svg.appendChild(circle);
+	      svg.appendChild(ball);
 
 	      // Detect goal
 	      var rightGoal = this.x + this.radius >= this.boardWidth;
